@@ -1,0 +1,30 @@
+{
+    "name": "tmserver",
+    "version": "1.0.0",
+    "main": "src/index.ts",
+    "author": "itzyashh",
+    "license": "MIT",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "helmet": "^8.1.0",
+        "mongoose": "^8.13.2",
+        "mongoose-paginate-v2": "^1.9.0",
+        "zod": "^3.24.2"
+    },
+    "scripts": {
+        "start": "node --experimental-specifier-resolution=node dist/index.js",
+        "dev": "NODE_OPTIONS=\"--loader ts-node/esm\" nodemon src/index.ts",
+        "build": "tsc"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.1",
+        "@types/node": "^22.14.1",
+        "nodemon": "^3.1.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
+}
