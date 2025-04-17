@@ -1,15 +1,21 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
 import { connectDB } from './config/database.js';
+
+import errorHandler from './middleware/errorHandler.js';
+import { router } from './routes/index.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
+app.use(cors());
+app.use(helmet());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello, World! This is the API endpoint.');
-});
+app.use('/', router);
+app.use(errorHandler);
 
 connectDB().then(() =>
     app.listen(PORT, () => {
