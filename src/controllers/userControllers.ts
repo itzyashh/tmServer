@@ -33,8 +33,7 @@ const register = async (req: Request, res: Response): Promise<any> => {
         return res.status(201).json({
             message: 'User created!',
             user: {
-                id: newUser._id,
-                ...validatedData,
+                ...newUser.toObject(),
                 password: undefined // Exclude password from the response
             }
         });
@@ -51,4 +50,36 @@ const register = async (req: Request, res: Response): Promise<any> => {
     }
 };
 
-export { register };
+const login = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const validatedData = loginSchema.parse(req.body);
+
+        const user = await User.findOne({
+            $or: [{ email: validatedData.email }, { username: validatedData.username }]
+        }).select('+password'); // Include password in the query to compare later
+        if (!user) return res.status(401).json({ error: { message: 'Invalid credentials' } });
+        const isMatch = await bcrypt.compare(validatedData.password, user.password);
+        if (!isMatch) return res.status(401).json({ error: { message: 'Invalid credentials' } });
+
+        return res.status(200).json({
+            message: 'Login successful',
+            user: {
+                ...user.toObject(),
+                password: undefined // Exclude password from the response
+            }
+        });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({
+                error: {
+                    message: 'Validation error',
+                    details: error.errors
+                }
+            });
+        }
+        console.error('Error during login:', error);
+        return res.json({ error: { message: 'Something went wrong' } });
+    }
+};
+
+export { register, login };
