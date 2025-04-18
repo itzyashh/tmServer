@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { userRouter } from './userRoutes.js';
+import { taskRouter } from './taskRoutes.js';
 
 const router = Router();
 
@@ -22,5 +23,5 @@ router.get('/health', (req, res) => {
 });
 
 router.use('/user', userRouter);
-
+router.use('/tasks', taskRouter);
 export { router };
