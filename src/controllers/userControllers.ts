@@ -12,13 +12,12 @@ const registerSchema = z.object({
 
 const loginSchema = z
     .object({
-        username: z.string().optional(),
-        email: z.string().optional(),
+        usernameOrEmail: z.string().optional(),
         password: z.string()
     })
-    .refine((data) => data.username || data.email, {
+    .refine((data) => data.usernameOrEmail, {
         message: 'Either username or email must be provided',
-        path: ['username', 'email']
+        path: ['usernameOrEmail']
     });
 
 const register = async (req: Request, res: Response): Promise<any> => {
@@ -57,7 +56,7 @@ const login = async (req: Request, res: Response): Promise<any> => {
         const validatedData = loginSchema.parse(req.body);
 
         const user = await User.findOne({
-            $or: [{ email: validatedData.email }, { username: validatedData.username }]
+            $or: [{ email: validatedData.usernameOrEmail }, { username: validatedData.usernameOrEmail }]
         }).select('+password'); // Include password in the query to compare later
         if (!user) return res.status(401).json({ error: { message: 'Invalid credentials' } });
         const isMatch = await bcrypt.compare(validatedData.password, user.password);
